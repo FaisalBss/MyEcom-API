@@ -1,35 +1,55 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\CartApiController;
+use App\Http\Controllers\Api\CheckoutApiController;
+use App\Http\Controllers\Api\SupportRequestApiController;
+use App\Http\Controllers\Api\PasswordResetApiController;
+use App\Http\Controllers\Api\HomeApiController;
 
+Route::post('/login', [AuthApiController::class, 'login']);
+Route::post('/register', [AuthApiController::class, 'register']);
+Route::post('/password/forgot', [PasswordResetApiController::class, 'sendResetLink']);
+Route::post('/password/reset', [PasswordResetApiController::class, 'resetPassword']);
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('/logout', [AuthApiController::class, 'logout']);
+    Route::get('/me', [AuthApiController::class, 'me']);
+    Route::post('/refresh', [AuthApiController::class, 'refresh']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::apiResource('categories', CategoryApiController::class);
+    Route::apiResource('products', ProductApiController::class);
+
+    Route::get('/orders', [OrderApiController::class, 'userOrders']);
+    Route::get('/orders/{id}', [OrderApiController::class, 'show']);
+
+    Route::get('/cart', [CartApiController::class, 'index']);
+    Route::post('/cart/{product}', [CartApiController::class, 'store']);
+    Route::put('/cart/{product}', [CartApiController::class, 'update']);
+    Route::delete('/cart/{product}', [CartApiController::class, 'destroy']);
+    Route::delete('/cart/clear', [CartApiController::class, 'clear']);
+
+    Route::prefix('checkout')->group(function () {
+        Route::get('/', [CheckoutApiController::class, 'index']);
+        Route::get('/shipping', [CheckoutApiController::class, 'shipping']);
+        Route::post('/shipping/store', [CheckoutApiController::class, 'storeShipping']);
+        Route::post('/shipping/select', [CheckoutApiController::class, 'selectShipping']);
+        Route::get('/payment', [CheckoutApiController::class, 'payment']);
+        Route::post('/payment/save', [CheckoutApiController::class, 'savePaymentMethod']);
+        Route::post('/payment/place', [CheckoutApiController::class, 'placeOrder']);
+    });
+
+    Route::get('/support', [SupportRequestApiController::class, 'index']);
+    Route::post('/support', [SupportRequestApiController::class, 'store']);
+    Route::get('/support/admin', [SupportRequestApiController::class, 'adminIndex']);
+    Route::get('/support/admin/{id}', [SupportRequestApiController::class, 'adminShow']);
+    Route::put('/support/admin/{id}', [SupportRequestApiController::class, 'adminUpdateStatus']);
 });
 
-// Products CRUD
-Route::get('/products', [ProductApiController::class, 'index']);
-Route::get('/products/{id}', [ProductApiController::class, 'show']);
-Route::post('/products', [ProductApiController::class, 'store']);
-Route::put('/products/{id}', [ProductApiController::class, 'update']);
-Route::delete('/products/{id}', [ProductApiController::class, 'destroy']);
-
-// Categories
-Route::get('/categories', [ProductApiController::class, 'categories']);
-Route::get('/categories/{catid}/products', [ProductApiController::class, 'getByCategory']);
-
-// Search
-Route::get('/products/search', [ProductApiController::class, 'search']);
+Route::get('/home/categories', [HomeApiController::class, 'categories']);
+Route::get('/home/products/{catid?}', [HomeApiController::class, 'products']);
+Route::get('/home/search', [HomeApiController::class, 'search']);

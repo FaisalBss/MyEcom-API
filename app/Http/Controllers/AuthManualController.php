@@ -50,8 +50,7 @@ class AuthManualController extends Controller
             $request->only(['name', 'email', 'password'])
         );
 
-        auth()->login($user); // تسجيل الدخول مباشرة بعد التسجيل
-
+        auth()->login($user);
         if ($user->role == User::ROLE_ADMIN) {
             return redirect('/admin/dashboard');
         }

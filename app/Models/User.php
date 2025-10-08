@@ -8,51 +8,32 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // ✅ ثوابت الأدوار
     public const ROLE_USER  = 0;
     public const ROLE_ADMIN = 1;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // 👈 خليها كذا بدون => 'boolean'
+        'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
-        'role'              => 'integer', // 👈 نخليها integer بدل boolean
+        'role'              => 'integer',
     ];
-
-    // ======================
-    // 🔹 Relations
-    // ======================
 
     public function carts(): HasMany
     {
@@ -89,10 +70,6 @@ class User extends Authenticatable
         return $this->hasMany(SupportRequest::class);
     }
 
-    // ======================
-    // 🔹 Helpers
-    // ======================
-
     public function getIsAdminAttribute(): bool
     {
         return $this->role === self::ROLE_ADMIN;
@@ -101,5 +78,17 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [
+            'role' => $this->role,
+        ];
     }
 }

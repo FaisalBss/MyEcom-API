@@ -82,7 +82,7 @@
                                 </li>
 
                                 <li class="{{ request()->routeIs('user.Orders') ? 'current-list-item' : '' }}">
-                                    <a href="{{ route('user.Orders') }}">My Orders</a>
+                                    <a href="{{ route('user.orders') }}">My Orders</a>
                                 </li>
 
                                 <li>

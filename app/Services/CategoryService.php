@@ -19,7 +19,6 @@ class CategoryService
     public function updateCategory(Category $category, array $data): Category
     {
         if (isset($data['image'])) {
-            // حذف الصورة القديمة
             if ($category->image && Storage::disk('public')->exists($category->image)) {
                 Storage::disk('public')->delete($category->image);
             }
@@ -33,14 +32,12 @@ class CategoryService
 
     public function deleteCategory(Category $category): void
     {
-        // حذف صور المنتجات التابعة
         foreach ($category->products as $product) {
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
         }
 
-        // حذف صورة الكاتيقوري نفسها
         if ($category->image && Storage::disk('public')->exists($category->image)) {
             Storage::disk('public')->delete($category->image);
         }

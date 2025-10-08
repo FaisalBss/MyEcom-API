@@ -19,26 +19,21 @@
         </div>
 
         <div class="contact-form">
-          <form method="POST" action="{{ route('login') }}" style="text-align:left">
+          <form id="loginForm" style="text-align:left">
             @csrf
 
             <p>
               <input type="email" style="width:100%" name="email" id="email"
-                     placeholder="Email" value="{{ old('email') }}" >
-              @error('email') <span class="text-danger">{{ $message }}</span> @enderror
+                     placeholder="Email" required>
             </p>
 
             <p>
               <input type="password" style="width:100%" name="password" id="password"
-                     placeholder="Password" >
-              @error('password') <span class="text-danger">{{ $message }}</span> @enderror
+                     placeholder="Password" required>
             </p>
 
             <p style="display:flex;justify-content:space-between;align-items:center">
-              <label style="margin:0">
-                <input type="checkbox" name="remember"> Remember me
-              </label>
-              <a href="{{ route('password.request') }}">Forgot password?</a>
+              <a href="{{ url('/forgot-password') }}">Forgot password?</a>
             </p>
 
             <p><input type="submit" value="Sign in"></p>
@@ -47,9 +42,59 @@
               <a href="{{ route('register') }}">Create one</a>
             </p>
           </form>
+
+          <div id="loginMessage" class="mt-3"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const msgDiv = document.getElementById("loginMessage");
+
+  msgDiv.innerHTML = '<div class="alert alert-secondary">⏳ Signing in...</div>';
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    //const data = await response.json();
+
+    const text = await response.text();
+console.log('Raw Response:', text);
+let data;
+try { data = JSON.parse(text); } catch(e) { data = {}; }
+
+
+    if (response.ok && data.success) {
+      localStorage.setItem("token", data.token);
+      msgDiv.innerHTML = `<div class="alert alert-success">${data.message || 'Login successful!'}</div>`;
+
+      setTimeout(() => {
+        if (data.user && data.user.role === 1) {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
+      }, 1200);
+    } else {
+      msgDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Invalid credentials'}</div>`;
+    }
+  } catch (error) {
+    msgDiv.innerHTML = `<div class="alert alert-danger">⚠️ Something went wrong. Please try again.</div>`;
+  }
+});
+</script>
 @endsection
