@@ -11,7 +11,7 @@ class CartController extends Controller
 {
     public function __construct(private CartService $cartService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth:api');
     }
 
     public function view()

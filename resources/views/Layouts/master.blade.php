@@ -101,10 +101,10 @@
                                     </li>
                                 @else
                                     <li class="{{ request()->routeIs('login') ? 'current-list-item' : '' }}">
-                                        <a href="{{ route('login') }}">Login</a>
+                                        <a href="/login">Login</a>
                                     </li>
                                     <li class="{{ request()->routeIs('register') ? 'current-list-item' : '' }}">
-                                        <a href="{{ route('register') }}">Register</a>
+                                        <a href="/api/register">Register</a>
                                     </li>
                                 @endauth
                             </ul>

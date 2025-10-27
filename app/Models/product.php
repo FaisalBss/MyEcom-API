@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Translatable\HasTranslations;
 
-class product extends Model
+class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
+
+public $translatable = ['name', 'description'];
 
 protected $fillable = [
     'name', 'price', 'quantity', 'category_id', 'description', 'image'

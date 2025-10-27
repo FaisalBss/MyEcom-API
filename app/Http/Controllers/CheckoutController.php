@@ -18,7 +18,7 @@ class CheckoutController extends Controller
         private ShippingService $shippingService,
         private PaymentService $paymentService
     ) {
-        $this->middleware('auth');
+        $this->middleware('auth:api');
     }
 
     public function index(Request $request)

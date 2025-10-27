@@ -12,7 +12,7 @@ class SupportRequestController extends Controller
 {
     public function __construct(private SupportService $supportService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth:api');
         Paginator::useBootstrapFive();
     }
 

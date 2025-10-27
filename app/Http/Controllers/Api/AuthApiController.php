@@ -25,12 +25,12 @@ class AuthApiController extends Controller
         }
 
         return response()->json([
-            'success'     => true,
-            'message'     => 'Login successful',
-            'user'        => auth('api')->user(),
-            'token'       => $token,
-            'token_type'  => 'bearer',
-            'expires_in'  => auth('api')->factory()->getTTL() * 60,
+            'success'    => true,
+            'message'    => 'Login successful',
+            'user'       => auth('api')->user(),
+            'token'      => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
 
@@ -41,12 +41,12 @@ class AuthApiController extends Controller
         );
 
         return response()->json([
-            'success'     => true,
-            'message'     => 'User registered successfully',
-            'user'        => $result['user'],
-            'token'       => $result['token'],
-            'token_type'  => 'bearer',
-            'expires_in'  => auth('api')->factory()->getTTL() * 60,
+            'success'    => true,
+            'message'    => $result['message'],
+            'user'       => $result['user'],
+            'token'      => $result['token'],
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ], 201);
     }
 
@@ -71,10 +71,10 @@ class AuthApiController extends Controller
     public function refresh()
     {
         return response()->json([
-            'success'     => true,
-            'token'       => $this->authService->refresh(),
-            'token_type'  => 'bearer',
-            'expires_in'  => auth('api')->factory()->getTTL() * 60,
+            'success'    => true,
+            'token'      => $this->authService->refresh(),
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
 }

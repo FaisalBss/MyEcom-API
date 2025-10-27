@@ -1,0 +1,8 @@
+{
+    "User registered successfully. Please check your email for verification.": "تم تسجيل المستخدم بنجاح. الرجاء التحقق من بريدك الإلكتروني للتفعيل.",
+    "Invalid login": "بيانات الدخول غير صحيحة",
+    "Logged out successfully": "تم تسجيل الخروج بنجاح",
+    "Email verified successfully!": "تم تفعيل البريد الإلكتروني بنجاح!",
+    "Invalid verification link or user not found.": "رابط التفعيل غير صالح أو أن المستخدم غير موجود.",
+    "Email already verified.": "هذا البريد الإلكتروني مفعل مسبقاً."
+}

@@ -20,7 +20,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('/api/categories')
+    fetch('/api/home/categories')
         .then(res => res.json())
         .then(response => {
             if (response.success) {
