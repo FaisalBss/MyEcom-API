@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SupportRequestApiController;
 use App\Http\Controllers\Api\PasswordResetApiController;
 use App\Http\Controllers\Api\HomeApiController;
 use App\Http\Controllers\Api\VerificationController;
+use App\Http\Controllers\Api\PlaceholderPostController;
 
 Route::post('/login', [AuthApiController::class, 'login']);
 Route::post('/register', [AuthApiController::class, 'register']);
@@ -27,6 +28,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware(['verified'])->group(function () {
         Route::apiResource('categories', CategoryApiController::class);
         Route::apiResource('products', ProductApiController::class);
+
+        Route::post('/test-posts', [PlaceholderPostController::class, 'getPosts']);
 
         Route::get('/orders', [OrderApiController::class, 'userOrders']);
         Route::get('/orders/{id}', [OrderApiController::class, 'show']);
