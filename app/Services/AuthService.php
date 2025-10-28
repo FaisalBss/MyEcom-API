@@ -41,31 +41,21 @@ class AuthService
     protected function sendVerificationEmail(User $user): void
     {
         try {
-            $verificationLink = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(60),
-                ['id' => $user->id, 'hash' => sha1($user->getEmailForVerification())]
-            );
+            $otp = rand(1000, 9999);
 
-            Mail::to($user->email)->queue(new SendVerificationEmail($user, $verificationLink));
+            $user->verification_code = $otp;
+            $user->verification_code_expires_at = Carbon::now()->addMinutes(10);
+            $user->save();
+
+            Mail::to($user->email)->queue(new SendVerificationEmail($user, $otp));
 
         } catch (\Exception $e) {
-            Log::error('Failed to send verification email for user ' . $user->id . ': ' . $e->getMessage());
+            Log::error('Failed to queue verification email for user ' . $user->id . ': ' . $e->getMessage());
         }
     }
 
-    public function verifyEmail($id, $hash): array
+   public function verifyEmailOtp(User $user, string $otp): array
     {
-        $user = User::find($id);
-
-        if (!$user || !hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return [
-                'success' => false,
-                'message' => 'Invalid verification link or user not found.',
-                'status'  => 400
-            ];
-        }
-
         if ($user->hasVerifiedEmail()) {
             return [
                 'success' => true,
@@ -74,7 +64,26 @@ class AuthService
             ];
         }
 
-        $user->markEmailAsVerified();
+        if ($user->verification_code !== $otp) {
+             return [
+                'success' => false,
+                'message' => 'Invalid verification code.',
+                'status'  => 400
+            ];
+        }
+
+        if (Carbon::now()->isAfter($user->verification_code_expires_at)) {
+             return [
+                'success' => false,
+                'message' => 'Verification code has expired.',
+                'status'  => 400
+            ];
+        }
+
+        $user->email_verified_at = Carbon::now();
+        $user->verification_code = null;
+        $user->verification_code_expires_at = null;
+        $user->save();
 
         return [
             'success' => true,
@@ -82,6 +91,26 @@ class AuthService
             'status'  => 200
         ];
     }
+
+    public function resendVerificationEmail(User $user): array
+    {
+        if ($user->hasVerifiedEmail()) {
+            return [
+                'success' => false,
+                'message' => 'Email is already verified.',
+                'status'  => 400
+            ];
+        }
+
+        $this->sendVerificationEmail($user);
+
+        return [
+            'success' => true,
+            'message' => 'A new verification code has been sent to your email.',
+            'status'  => 200
+        ];
+    }
+
 
     public function logout(): void
     {

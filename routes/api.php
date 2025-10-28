@@ -14,14 +14,13 @@ use App\Http\Controllers\Api\VerificationController;
 
 Route::post('/login', [AuthApiController::class, 'login']);
 Route::post('/register', [AuthApiController::class, 'register']);
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->name('verification.verify')
-    ->middleware(['signed', 'throttle:6,1']);
 Route::post('/password/forgot', [PasswordResetApiController::class, 'sendResetLink']);
 Route::post('/password/reset', [PasswordResetApiController::class, 'resetPassword']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/logout', [AuthApiController::class, 'logout']);
+    Route::post('/email/verify-otp', [VerificationController::class, 'verifyOtp']);
+    Route::post('/email/resend-otp', [VerificationController::class, 'resendOtp']);
     Route::get('/me', [AuthApiController::class, 'me']);
     Route::post('/refresh', [AuthApiController::class, 'refresh']);
 

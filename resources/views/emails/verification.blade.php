@@ -7,17 +7,14 @@
 <body style="font-family: Arial, sans-serif; text-align: right;">
 
     <h1>أهلاً بك، {{ $user->name }}!</h1>
-    <p>شكراً لتسجيلك. الرجاء الضغط على الرابط لتفعيل حسابك:</p>
+    <p>شكراً لتسجيلك. استخدم الكود التالي لتفعيل حسابك:</p>
 
-    <a href="{{ $verificationLink }}" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-        اضغط هنا للتفعيل
-    </a>
+    <div style="padding: 15px; background-color: #f4f4f4; border-radius: 5px; text-align: center; margin: 20px 0;">
+        <h2 style="margin: 0; letter-spacing: 5px; color: #333;">
+            {{ $otp }} </h2>
+    </div>
 
-    <p style="margin-top: 20px;">
-        إذا لم يعمل الرابط، قم بنسخ ولصق العنوان التالي:
-        <br>
-        <small>{{ $verificationLink }}</small>
-    </p>
+    <p>هذا الكود صالح لمدة 10 دقائق.</p>
 
 </body>
 </html>

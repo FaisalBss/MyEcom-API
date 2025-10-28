@@ -10,9 +10,27 @@ class VerificationController extends Controller
 {
     public function __construct(protected AuthService $authService) {}
 
-    public function verify(Request $request, $id, $hash)
+    public function verifyOtp(Request $request)
     {
-        $result = $this->authService->verifyEmail($id, $hash);
+        $request->validate([
+            'otp' => 'required|string|min:4|max:6',
+        ]);
+
+        $user = $request->user();
+
+        $result = $this->authService->verifyEmailOtp($user, $request->otp);
+
+        return response()->json([
+            'success' => $result['success'],
+            'message' => $result['message']
+        ], $result['status']);
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $user = $request->user();
+
+        $result = $this->authService->resendVerificationEmail($user);
 
         return response()->json([
             'success' => $result['success'],

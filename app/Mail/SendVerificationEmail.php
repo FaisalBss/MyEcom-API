@@ -16,12 +16,12 @@ class SendVerificationEmail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $user;
-    public $verificationLink;
+    public $otp;
 
-    public function __construct(User $user, string $verificationLink)
+    public function __construct(User $user, string $otp)
     {
         $this->user = $user;
-        $this->verificationLink = $verificationLink;
+        $this->otp = $otp;
     }
 
     public function envelope(): Envelope
