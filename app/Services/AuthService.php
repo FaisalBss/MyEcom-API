@@ -34,7 +34,7 @@ class AuthService
         return [
             'user'    => $user,
             'token'   => $token,
-            'message' => __('User registered successfully. Please check your email for verification.')
+            'message' => __('messege.registration_success')
         ];
     }
 
@@ -122,7 +122,7 @@ class AuthService
         return JWTAuth::refresh(JWTAuth::getToken());
     }
 
-    public function me(): ?User
+    public function getProfileInfo(): ?User
     {
         return auth('api')->user();
     }

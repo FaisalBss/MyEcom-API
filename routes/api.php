@@ -22,7 +22,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/logout', [AuthApiController::class, 'logout']);
     Route::post('/email/verify-otp', [VerificationController::class, 'verifyOtp']);
     Route::post('/email/resend-otp', [VerificationController::class, 'resendOtp']);
-    Route::get('/me', [AuthApiController::class, 'me']);
+    Route::get('/me', [AuthApiController::class, 'getProfileInfo']);
     Route::post('/refresh', [AuthApiController::class, 'refresh']);
 
     Route::middleware(['verified'])->group(function () {

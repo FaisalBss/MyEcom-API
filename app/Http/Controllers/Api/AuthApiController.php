@@ -60,7 +60,7 @@ class AuthApiController extends Controller
         ]);
     }
 
-    public function me()
+    public function getProfileInfo()
     {
         return response()->json([
             'success' => true,
